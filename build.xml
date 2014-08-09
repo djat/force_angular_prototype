@@ -1,0 +1,32 @@
+<project name="Sample usage of Salesforce Ant tasks" default="test" basedir="." xmlns:sf="antlib:com.salesforce">
+
+    <property file="build.properties"/>
+    <property environment="env"/>
+
+     <target name="retrieve">
+      <mkdir dir="Proj_Metadata"/>
+      <!-- Retrieve the contents into another directory -->
+      <sf:retrieve username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" maxPoll="${sf.maxPoll}" retrieveTarget="Proj_Metadata" unpackaged="retrieveSource/package.xml"/>
+    </target>
+	<target name="deploy">
+<!--	<classpath>
+      <pathelement path="${classpath}"/>
+      <pathelement location="lib/ant-salesforce.jar"/>
+    </classpath>
+-->
+      <sf:deploy username="${sf.usernameDeploy}" password="${sf.passwordDeploy}" serverurl="${sf.serverurlDeploy}" maxPoll="${sf.maxPoll}" deployRoot="Proj_Metadata"/>
+    </target>
+	
+	<!-- Retrieve the information of all items of a particular metadata type -->
+    <target name="listMetadata">
+      <sf:listMetadata username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" metadataType="Report" resultFilePath="listMetadata/listReports.log" folder="unfiled$public"/>
+    </target>
+<!-- Retrieve the information on all supported metadata type -->
+	<target name="describeMetadata">
+  <sf:describeMetadata
+    username="${sf.username}"
+    password="${sf.password}"
+    serverurl="${sf.serverurl}"
+    resultFilePath="DescribeMetadata/describe.log"/>
+</target>
+</project>

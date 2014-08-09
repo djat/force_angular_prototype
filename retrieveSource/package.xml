@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+<types>
+        <name>ApexClass</name>
+		<members>TestAcceptOfferUpdateCounts_trg</members>
+    </types>
+<types>
+        <name>ApexTrigger</name>
+		<members>AcceptOfferUpdateCounts</members>
+</types>
+ <types>
+	<name>CustomObject</name>
+     		<members>Contact</members>
+     		<members>Offer__c</members>
+	 	<members>Offer_Acceptance__c</members>		
+</types>
+<types>
+        <name>StaticResource</name>
+        	<members>*</members>
+</types>
+<types>
+	<name>ApexPage</name>
+        	<members>AcceptOffers</members>
+</types>
+    <version>29.0</version>
+</Package>
+
