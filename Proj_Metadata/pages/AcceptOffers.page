@@ -1,0 +1,414 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="true" cache="false" standardController="Contact">
+    <html xmlns:ng="http://angularjs.org" ng-app="myApp" lang="en">
+        <head>
+            <meta charset="utf-8"/>
+            <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet"/>
+            <link href="https://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css" rel="stylesheet"/>
+            <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js"/>
+            <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"/>
+            <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jsforce/1.2.0/jsforce.min.js"/>
+            
+            
+            <style>
+                .input-mysize { width: 550px }
+                .search-query {
+                padding-left: 469px;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJ5JREFUeNpi+P//PwMQMANxERCfAeI/UBrEZwbJQ9WAFR0A4u1AbAnEbFB6O1ScGaawGoi3wHQiYyBYDZKHKbwHxLo4FOqC5GEKf4Ksw6EQ5IyfIDYTkPEUiNUZsAOQ+F9GRkYJEKcFiDficSOIcRjE4QTiY0C8DuRbqAJLKP8/FP9kQArHUiA+jySJjA8w4LAS5KZd0MAHhaccQIABALsMiBZy4YLtAAAAAElFTkSuQmCC);
+                background-repeat: no-repeat;
+                background-position: 562px 8px;
+                }
+                
+                
+            </style>
+        </head>
+      
+        <!--- Javascript -->
+        <script type="text/javascript">
+        
+        				var sortingOrder = 'name';
+            
+                		var myapp = angular.module('myApp', []);
+ 
+        				myapp.service('OfferService', function ($rootScope, $q) {
+        
+        
+        									var deferred = $q.defer();
+						        
+						        			var promise = deferred.promise;
+						        			
+						        			var records = [];
+						                 	
+						                 	 var conn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}' });
+								             var query = "SELECT Id, Description__c, Valid_Through__c, Current_Units_Available__c from Offer__c WHERE (Current_Units_Available__c > 0 AND Valid_Through__c >= TODAY) ORDER BY Description__c ASC LIMIT 1000";
+								             
+								             conn.query(query , function(error, res) {
+								                 if (error) {
+								                    
+								                    //TODO: bubble error
+								                    console.log("error");
+								                    
+								                 } else {
+								                 
+								                     
+								                     deferred.resolve(res.records);
+								                     
+								                     $rootScope.$apply();
+								                     
+								                     
+								                 }
+								             }
+								             );
+						    		    	
+									    	
+									    return promise;
+											
+						                     
+						             	}
+	             					);
+	             					
+	             					
+	              myapp.service('GetOfferService', function ($q, $rootScope) {
+	              				
+	              				return {
+	              				
+	              					getOffer : function (recordid)
+	              					{
+	              					
+	              					   	var deferred = $q.defer();
+	              						
+	              						
+	              						 var conn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}' });
+	              						conn.sobject("Offer__c").retrieve([recordid], function(err, offers) {
+									 
+									 
+									  if (err) { return console.error(err); }
+									  	
+									  	
+									  	for (var i=0; i < offers.length; i++) {
+									    		console.log("Name : " + offers[i].Name);
+									    		console.log("Avail : " + offers[i].Current_Units_Available__c);
+									  		}
+										
+										             deferred.resolve(offers);
+								                     $rootScope.$apply();
+								                     
+								        });         
+								             
+								             
+						        		return deferred.promise;
+	              					
+	              					}
+	              					
+	              				}
+	              
+	              		});
+	             					
+	             					
+				   myapp.service('AcceptanceService', function ($q, $rootScope) {
+        							
+        																
+        							return {
+	              				
+	              					acceptOffer : function(contactid,offerid)
+	              					{
+	              					
+	              					var deferred = $q.defer();
+						        
+									var promise = deferred.promise;
+	              					
+									
+										 var conn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}' });
+								             
+								             conn.sobject("Offer_Acceptance__c").create({ Contact__c : contactid, Offer__c : offerid }, function(err, ret) {
+								             
+								             if (err || !ret.success) { return console.error(err, ret); }
+  													
+  													console.log('Definitely success: '+ret.id);							
+  													deferred.resolve(ret.id);
+  													$rootScope.$apply();
+  															
+  													
+											  });
+											  
+											  
+										return promise;
+										
+										}
+										
+										
+										
+									
+									}
+									}
+									
+									
+									
+								);
+										             					
+	         
+            
+         			
+        
+        
+        <!-- Define Controller  -->
+            var contrl=myapp.controller('ctrlRead', function ($rootScope, $scope, $filter, OfferService,  AcceptanceService, GetOfferService) {
+            //var contrl=myapp.controller('ctrlRead', function ($scope, $filter) {
+                <!--- Initialize Scope Variables --->
+                
+                OfferService.then(function (data) {
+                
+                	$scope.items = data;
+                	
+                	$scope.search();
+                	
+                	
+                }
+                );
+                
+                
+                $scope.contactId = jQuery("#contactid").text();
+                $scope.sortingOrder = sortingOrder;
+                $scope.reverse = false;
+                $scope.filteredItems = [];
+                $scope.groupedItems = [];
+                $scope.itemsPerPage = 10;
+                $scope.pagedItems = [];
+                $scope.currentPage = 0;
+                
+                var searchMatch = function (haystack, needle) {
+                
+                
+                
+                    if (!needle||!haystack) {
+                    	
+                        return true;
+                    }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    	var haystacklower = haystack.toString().toLowerCase();
+                    	
+                    	var needlelower = needle.toString().toLowerCase();
+                    	
+                    	var index = haystacklower.indexOf(needlelower);
+                    	
+                    	console.log(haystacklower + ' : '+needlelower + ' : '+index);
+                    	
+                    	return index !== -1;
+                    	
+                    	
+                    
+                };
+                
+                
+                $scope.accept = function(id) {
+                
+                	
+                	var r = confirm("Are you sure you want to accept this offer?");
+					
+					if (r == true) {
+                	
+                	var contactId = $scope.contactId;
+                	
+                	AcceptanceService.acceptOffer(contactId,id).then(function (recordid) {
+                	
+                	console.log('After acceptance service complete');
+                	
+                	    
+                		
+	                	GetOfferService.getOffer(id).then(function(response) {
+	                	
+	                			console.log('After get offer service complete!!');	
+	                			
+	                			var newOfferInfo  = response[0];
+								
+								var id = newOfferInfo.Id;
+								
+								console.log('id: '+id);
+								
+								var newitems = $scope.items;
+								
+								
+								for (var i = 0, l = newitems.length; i < l; i++) {
+								    if (newitems[i].Id === id) {
+								        newitems[i] = newOfferInfo;
+								        break;
+								    }
+								}
+								
+								
+								$scope.items = newitems;
+								
+								
+	                			$scope.search();
+	                			
+	                			
+	                	
+	                		});
+                			
+                		
+                	});
+                	} // r==true
+                	
+                
+                }
+                
+                //Initialize the Search Filters 
+                $scope.search = function () {
+                
+                    $scope.filteredItems = $filter('filter')($scope.items, function (item) {
+                        for (var attr in item) {
+                        	
+                        	var itemAttr = item[attr];
+                        	
+                        	if (itemAttr !== null && typeof itemAttr !== 'object') {
+                            	if (searchMatch(itemAttr, $scope.query))
+                                	return true;
+                                }
+                        }
+                        return false;
+                    });
+                    // Define Sorting Order
+                    if ($scope.sortingOrder !== '') {
+                        $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sortingOrder, $scope.reverse);
+                    }
+                    $scope.currentPage = 0;
+                    
+                    // Group by pages
+                    $scope.groupToPages();
+                };
+                
+                // Calculate Total Number of Pages based on Records Queried 
+                $scope.groupToPages = function () {
+                    $scope.pagedItems = [];
+                    for (var i = 0; i < $scope.filteredItems.length; i++) {
+                        if (i % $scope.itemsPerPage === 0) {
+                            $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [$scope.filteredItems[i]];
+                        } else {
+                            $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+                        }
+                    }
+                };
+                
+                $scope.range = function (start, end) {
+                    var ret = [];
+                    if (!end) {
+                        end = start;
+                        start = 0;
+                    }
+                    for (var i = start; i < end; i++) {
+                        ret.push(i);
+                    }
+                    return ret;
+                };
+                
+                $scope.prevPage = function () {
+                    if ($scope.currentPage > 0) {
+                        $scope.currentPage--;
+                    }
+                };
+                
+                $scope.nextPage = function () {
+                    if ($scope.currentPage < $scope.pagedItems.length - 1) {
+                        $scope.currentPage++;
+                    }
+                };
+                $scope.setPage = function () {
+                    $scope.currentPage = this.n;
+                };
+                // functions have been describe process the data for display
+                //$scope.search();
+                
+                // change sorting order
+                $scope.sort_by = function (newSortingOrder) {
+                
+                //var jQuery = $.noConflict();
+                
+                    if ($scope.sortingOrder == newSortingOrder)
+                        $scope.reverse = !$scope.reverse;
+                    $scope.sortingOrder = newSortingOrder;
+                    
+                    // icon setup
+                    jQuery('th i').each(function () {
+                        // icon reset
+                        jQuery(this).removeClass().addClass('icon-sort');
+                    });
+                    if ($scope.reverse)
+                        jQuery('th.' + newSortingOrder + ' i').removeClass().addClass('icon-chevron-up');
+                    else
+                        jQuery('th.' + newSortingOrder + ' i').removeClass().addClass('icon-chevron-down');
+                };
+                
+            });
+        
+        contrl.$inject = ['$scope', '$filter'];
+        </script>
+        <body>     
+            <!-- =========== Binding Controller to Body of Page ============= -->
+            <div ng-controller="ctrlRead">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <a class="brand" href="">Accept Offers</a>
+                       
+                    </div>
+                    
+                </div>
+                
+                <div id="contactid" style="display:none">
+                
+                	{!$CurrentPage.parameters.id}
+                </div>
+                
+                <div class="input-append" style="width:800px; margin:0 auto; ">
+                    <input type="text" ng-model="query" ng-change="search()" class="input-mysize  search-query" placeholder="Filter"/>
+                </div>
+               
+
+                <table class="table  table-hover">
+                    <thead>
+                        <tr>
+                        	<th class="accept" style="width:10%"></th>
+                            <th class="id">Id&nbsp;<a ng-click="sort_by('Id')"><i class="icon-sort"></i></a></th>
+                            <th class="name">Description&nbsp;<a ng-click="sort_by('Description__c')"><i class="icon-sort"></i></a></th>
+                            <th class="Phone">Valid Through&nbsp;<a ng-click="sort_by('Valid_Through__c')"><i class="icon-sort"></i></a></th>
+                            <th class="Phone">Current Units Available&nbsp;<a ng-click="sort_by('Current_Units_Available__c')"><i class="icon-sort"></i></a></th>
+                            
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <td colspan="6">
+                            <div class="pagination pagination-large pull-left">
+                                <ul>
+                                    <li ng-class="{disabled: currentPage == 0}">
+                                        <a ng-click="prevPage()">-- Prev</a>
+                                    </li>
+                                    <li ng-repeat="n in range(pagedItems.length)"
+                                    ng-class="{active: n == currentPage}"
+                                    ng-click="setPage()">
+                                        <a ng-bind="n + 1">1</a>
+                                    </li>
+                                    <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                                        <a ng-click="nextPage()">Next --</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tfoot>
+                    <tbody>
+                        <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse">
+                        	<td><button ng-click="accept(item.Id)">Accept Offer</button></td>
+                            <td>{{item.Id}}</td>
+                            <td>{{item.Description__c}}</td>
+                            <td>{{item.Valid_Through__c}}</td>
+                            <td>{{item.Current_Units_Available__c}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </body>
+    </html>
+</apex:page>

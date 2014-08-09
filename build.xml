@@ -3,6 +3,10 @@
     <property file="build.properties"/>
     <property environment="env"/>
 
+
+<taskdef uri="antlib:com.salesforce" resource="com/salesforce/antlib.xml" classpath="lib/ant-salesforce.jar"/>
+
+
      <target name="retrieve">
       <mkdir dir="Proj_Metadata"/>
       <!-- Retrieve the contents into another directory -->

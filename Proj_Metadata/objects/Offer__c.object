@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Acceptances__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>This is the current number of offers/units that have been accepted by customers.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the current number of offers/units that have been accepted by customers.</inlineHelpText>
+        <label>Acceptances</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Units_Available__c</fullName>
+        <description>This is the number of units of the offer that are currently available.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the number of units of the offer that are currently available.</inlineHelpText>
+        <label>Current Units Available</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>This is a description of the offer (ie. Organic Strawberries)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is a description of the offer (ie. Organic Strawberries)</inlineHelpText>
+        <label>Description</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Original_Units_Available__c</fullName>
+        <description>This is the maximum units available for this offer. This is entered when the offer is setup initially to represent the units in inventory.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the maximum units available for this offer. This is entered when the offer is setup initially to represent the units in inventory.</inlineHelpText>
+        <label>Original Units Available</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Valid_Through__c</fullName>
+        <description>The date when this offer is valid through.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date when this offer is valid through.</inlineHelpText>
+        <label>Valid Through</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Offer</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Description__c</columns>
+        <columns>Original_Units_Available__c</columns>
+        <columns>Acceptances__c</columns>
+        <columns>Current_Units_Available__c</columns>
+        <columns>Valid_Through__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>O-{00000000}</displayFormat>
+        <label>Offer ID</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Offers</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Description__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Original_Units_Available__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Acceptances__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Current_Units_Available__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Valid_Through__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Description__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Original_Units_Available__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Acceptances__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Current_Units_Available__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Valid_Through__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Description__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Original_Units_Available__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Acceptances__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Current_Units_Available__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Valid_Through__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CREATED_DATE</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Description__c</searchFilterFields>
+        <searchFilterFields>Original_Units_Available__c</searchFilterFields>
+        <searchFilterFields>Acceptances__c</searchFilterFields>
+        <searchFilterFields>Current_Units_Available__c</searchFilterFields>
+        <searchFilterFields>Valid_Through__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
+        <searchResultsAdditionalFields>Description__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Original_Units_Available__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Acceptances__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Current_Units_Available__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Valid_Through__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
+</CustomObject>
